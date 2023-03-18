@@ -19,9 +19,6 @@ class Article(db.Model):
     def __repr__(self):
         return "<Article %r>" % self.id
 
-# with app.app_context():
-#     db.create_all()
-
 
 @app.route('/')
 @app.route('/home')
@@ -34,15 +31,19 @@ def about():
     return render_template('about.html')
 
 
-@app.route('/posts') #виведення усіх даних із бази з подальшою обробкою через for в html документі
+@app.route(
+    '/posts')  # виведення усіх даних із бази з подальшою обробкою через for в html документі
 def posts():
     articles = Article.query.order_by(Article.date.desc()).all()
     return render_template('posts.html', articles=articles)
 
-@app.route('/posts/<int:id>') #взяття одного стовпця з бази(у нашому випадку id статті)
+
+@app.route(
+    '/posts/<int:id>')  # взяття одного стовпця з бази(у нашому випадку id статті)
 def post_detail(id):
     article = Article.query.get(id)
     return render_template('post_detail.html', article=article)
+
 
 @app.route('/posts/<int:id>/delete')
 def post_delete(id):
@@ -54,6 +55,7 @@ def post_delete(id):
     except Exception as e:
         print("Помилка додавання статті у базу:", e)
         return 'При видаленні статті виникла помилка'
+
 
 @app.route('/posts/<int:id>/update', methods=['POST', 'GET'])
 def post_update(id):
@@ -71,6 +73,7 @@ def post_update(id):
             print("Помилка додавання статті у базу:", e)
             return 'При редагуванні статті виникла помилка'
     return render_template('post_update.html', article=article)
+
 
 @app.route('/create_article', methods=['POST', 'GET'])
 def create_article():
@@ -91,6 +94,7 @@ def create_article():
             print("Помилка додавання статті у базу:", e)
             return 'При доданні статті виникла помилка'
     return render_template('create_article.html')
+
 
 if __name__ == '__main__':
     app.run(debug=True)
