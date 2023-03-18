@@ -1,7 +1,6 @@
-from flask import Flask, render_template, url_for, request, redirect, flash
+from flask import Flask, render_template, url_for, request, redirect
 from flask_sqlalchemy import SQLAlchemy
 from datetime import datetime
-from time import sleep
 
 app = Flask(__name__)
 app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///blog.db'
@@ -31,15 +30,13 @@ def about():
     return render_template('about.html')
 
 
-@app.route(
-    '/posts')  # виведення усіх даних із бази з подальшою обробкою через for в html документі
+@app.route('/posts')
 def posts():
     articles = Article.query.order_by(Article.date.desc()).all()
     return render_template('posts.html', articles=articles)
 
 
-@app.route(
-    '/posts/<int:id>')  # взяття одного стовпця з бази(у нашому випадку id статті)
+@app.route('/posts/<int:id>')
 def post_detail(id):
     article = Article.query.get(id)
     return render_template('post_detail.html', article=article)
@@ -87,9 +84,7 @@ def create_article():
             with app.app_context():
                 db.session.add(article)
                 db.session.commit()
-            if article:
-                # flash("Стаття успішно додана")
-                return redirect('/posts')
+            return redirect('/posts')
         except Exception as e:
             print("Помилка додавання статті у базу:", e)
             return 'При доданні статті виникла помилка'
